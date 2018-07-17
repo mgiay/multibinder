@@ -1,3 +1,21 @@
+#/etc/systemd/system/haproxy-multi@.service
+#LastUpdate: #14:58 2018.07.17
+#############################################
+#cat /etc/systemd/system/haproxy-multi@.service | grep LastUpdate
+
+#/usr/local/bin/
+# multibinder
+# multibinder-haproxy-erb
+# multibinder-haproxy-wrapper
+
+# sudo systemctl enable haproxy-multi@foo
+# sudo systemctl start haproxy-multi@foo
+#############################################
+# MULTIBINDER_BIN_PATH=/usr/local/bin
+# HAPROXY_BIN_FILE=/usr/sbin/haproxy
+# HAPROXY_CFG_PATH=/etc/haproxy
+
+
 [Unit]
 Description=HAProxy Load Balancer
 Documentation=man:haproxy(1)
@@ -18,3 +36,25 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
+
+
+# #THE-END
+
+#RESULT:
+# root@srv017 /etc/systemd/system# systemctl status haproxy-multi@foo.service
+# ? haproxy-multi@foo.service - HAProxy Load Balancer
+   # Loaded: loaded (/etc/systemd/system/haproxy-multi@.service; enabled; vendor preset: enabled)
+   # Active: active (running) since Tue 2018-07-17 15:06:30 +07; 4s ago
+     # Docs: man:haproxy(1)
+           # file:/usr/share/doc/haproxy/configuration.txt.gz
+  # Process: 30188 ExecStartPre=/usr/local/bin/multibinder-haproxy-erb /usr/sbin/haproxy -f ${CONFIG} -c -q (code=exited, status=0/SUCCESS)
+ # Main PID: 30199 (multibinder-hap)
+   # CGroup: /system.slice/system-haproxy\x2dmulti.slice/haproxy-multi@foo.service
+           # +-30199 /usr/bin/ruby2.3 /usr/local/bin/multibinder-haproxy-wrapper /usr/sbin/haproxy -Ds -f /etc/haproxy/foo.cfg.erb -p /run/haproxy-foo.pid
+           # +-30226 /usr/sbin/haproxy -Ds -f /etc/haproxy/foo.cfg -p /run/haproxy-foo.pid
+
+# Jul 17 15:06:30 srv017 systemd[1]: Starting HAProxy Load Balancer...
+# Jul 17 15:06:30 srv017 systemd[1]: Started HAProxy Load Balancer.
+# root@srv017 /etc/systemd/system# 
+
+
